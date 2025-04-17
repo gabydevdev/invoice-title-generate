@@ -25,8 +25,6 @@ module.exports = async (req, res) => {
 
 	const event = req.body;
 
-	console.log("Received event:", event);
-
 	if (event.challenge) return res.status(200).send(event.challenge);
 
 	if (event.type === 'page.created') {
@@ -49,7 +47,7 @@ module.exports = async (req, res) => {
 				`https://api.notion.com/v1/pages/${pageId}`,
 				{
 					properties: {
-						Name: {
+						'Invoice Number': {
 							title: [
 								{
 									text: {
@@ -63,7 +61,7 @@ module.exports = async (req, res) => {
 				{ headers: notionHeaders }
 			);
 
-			console.log("Page updated in Notion:", response.data);
+			// console.log("Page updated in Notion:", response.data);
 
 			res.status(200).send("Page updated successfully");
 
