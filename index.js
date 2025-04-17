@@ -8,51 +8,49 @@ const databaseId = process.env.DATABASE_ID;
 const notionHeaders = {
 	Authorization: `Bearer ${notionApiKey}`,
 	"Content-Type": "application/json",
-	"Notion-Version": "2021-05-13", // Notion API version
+	"Notion-Version": "2022-06-28",
 };
 
-// Function to generate the title based on the date and ID
-// This function generates a title in the format "INV-YYYY-MM-DD-ID"
-const generateTitle = (date, id) => {
-	return `INV-${date}-${id}`;
-};
+const generateTitle = (date, id) => `INV-${date}-${id}`;
 
-// Create a new item in Notion
-const createNotionItem = async () => {
-	const date = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
-	const id = Math.floor(Math.random() * 1000); // Generate a random ID
-
-	const title = generateTitle(date, id);
-
-	const requestBody = {
-		parent: { database_id: databaseId },
-		properties: {
-			Name: {
-				title: [
-					{
-						text: {
-							content: title,
-						},
-					},
-				],
-			},
-			// Add other properties as needed
-			// Example: Amount, Date, etc.
-		},
-	};
-
+module.exports = async (req, res) => {
 	try {
-		const response = await axios.post(notionApiUrl, requestBody, {
-			headers: notionHeaders,
+		const date = new Date().toISOString().split("T")[0];
+		const id = Math.floor(Math.random() * 1000);
+		const title = generateTitle(date, id);
+
+		const response = await axios.post(
+			notionApiUrl,
+			{
+				parent: { database_id: databaseId },
+				properties: {
+					Name: {
+						title: [
+							{
+								text: {
+									content: title,
+								},
+							},
+						],
+					},
+				},
+			},
+			{ headers: notionHeaders },
+		);
+
+		return res.status(200).json({
+			success: true,
+			message: "Item creado en Notion",
+			data: response.data,
 		});
-		console.log("Item successfully created:", response.data);
 	} catch (error) {
 		console.error(
-			"Error creating item in Notion:",
-			error.response ? error.response.data : error.message,
+			"Error creando item en Notion:",
+			error.response?.data || error.message,
 		);
+		return res.status(500).json({
+			success: false,
+			error: error.response?.data || error.message,
+		});
 	}
 };
-
-// Function to create an item in Notion
-createNotionItem();
