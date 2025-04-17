@@ -32,27 +32,17 @@ module.exports = async (req, res) => {
 	if (event.type === 'page.created') {
 
 		console.log("Page created event detected");
-		console.log("Event data:", event.data);
-		console.log("Event data ID:", event.data.id);
 
-		const pageId = event.data.id;
+		const pageId = event.entity?.id;
+
+		if (!pageId) {
+			console.error("Page ID not found in event data");
+			return res.status(400).send("Page ID not found");
+		}
+
+		console.log("Page ID:", pageId);
+
 		const pageTitle = generateTitle();
-		const notionUrl = `https://api.notion.com/v1/pages`;
-
-		const notionData = {
-			parent: { page_id: pageId },
-			properties: {
-				Name: {
-					title: [
-						{
-							text: {
-								content: pageTitle,
-							},
-						},
-					],
-				},
-			},
-		};
 
 		try {
 			const response = await axios.patch(
