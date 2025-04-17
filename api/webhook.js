@@ -20,14 +20,13 @@ const generateTitle = () => {
 
 module.exports = async (req, res) => {
 
-	console.log(req.body);
-	return res.status(200).send(req.body);
-
 	if (req.method !== "POST")
 		return res.status(405).send("Method Not Allowed");
 
 	try {
 		const { event, data } = req.body;
+
+		console.log("Received webhook:", event, data);
 
 		if (event !== "page.created") {
 			return res.status(200).json({ ignored: true });
