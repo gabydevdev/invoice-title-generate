@@ -2,9 +2,8 @@
 	"name": "invoice-title-generate",
 	"version": "1.0.0",
 	"description": "A simple application that generates invoice titles using the Notion API.",
-	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"register-webhook": "node utils/registerWebhook.js"
 	},
 	"keywords": [],
 	"author": "",
