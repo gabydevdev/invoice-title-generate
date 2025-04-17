@@ -19,6 +19,15 @@ const generateTitle = () => {
 };
 
 module.exports = async (req, res) => {
+
+	if (req.method === 'POST' && req.headers['notion-webhook-verify']) {
+		const token = req.headers['notion-webhook-verify'];
+
+		console.log('Notion Webhook Verify Token:', token);
+
+		return res.status(200).send(token);
+	}
+
 	if (req.method !== "POST")
 		return res.status(405).send("Method Not Allowed");
 
