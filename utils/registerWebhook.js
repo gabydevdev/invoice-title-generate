@@ -6,7 +6,7 @@ const axios = require("axios");
 const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const NOTION_VERSION = "2022-06-28";
 const DATABASE_ID = process.env.DATABASE_ID;
-const WEBHOOK_URL = "https://<your-vercel-app>.vercel.app/api/webhook"; // Reemplaza con tu dominio real
+const WEBHOOK_URL = process.env.WEBHOOK_URL;
 
 const headers = {
 	Authorization: `Bearer ${NOTION_API_KEY}`,
