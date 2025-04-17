@@ -23,42 +23,52 @@ module.exports = async (req, res) => {
 	if (req.method !== "POST")
 		return res.status(405).send("Method Not Allowed");
 
-	try {
-		const { event, data } = req.body;
+	const event = req.body;
 
-		console.log("Received webhook:", event, data);
+	console.log("Received event:", event);
 
-		if (event !== "page.created") {
-			return res.status(200).json({ ignored: true });
-		}
+	if (event.challenge) return res.status(200).send(event.challenge);
 
-		const pageId = data.id;
-		const title = generateTitle();
+	if (event.type === 'page.created') {
 
-		await axios.patch(
-			`https://api.notion.com/v1/pages/${pageId}`,
-			{
-				properties: {
-					Name: {
-						title: [
-							{
-								text: {
-									content: title,
-								},
+		console.log("Page created event detected");
+		console.log("Event data:", event.data);
+		console.log("Event data ID:", event.data.id);
+
+		const pageId = event.data.id;
+		const pageTitle = generateTitle();
+		const notionUrl = `https://api.notion.com/v1/pages`;
+
+		const notionData = {
+			parent: { page_id: pageId },
+			properties: {
+				Name: {
+					title: [
+						{
+							text: {
+								content: pageTitle,
 							},
-						],
-					},
+						},
+					],
 				},
 			},
-			{ headers: notionHeaders },
-		);
+		};
 
-		res.status(200).json({ success: true, title, pageId });
-	} catch (error) {
-		console.error(
-			"Error handling webhook:",
-			error.response?.data || error.message,
-		);
-		res.status(500).json({ error: error.response?.data || error.message });
+		try {
+			const response = await axios.post(notionUrl, notionData, {
+				headers: notionHeaders,
+			});
+
+			console.log("Page created in Notion:", response.data);
+
+			res.status(200).send("Page created successfully");
+
+		} catch (error) {
+			console.error("Error creating page in Notion:", error.response.data);
+			res.status(500).send("Error creating page in Notion");
+		}
+
+	} else {
+		res.status(200).send('Unhandled event type');
 	}
 };
