@@ -55,17 +55,31 @@ module.exports = async (req, res) => {
 		};
 
 		try {
-			const response = await axios.post(notionUrl, notionData, {
-				headers: notionHeaders,
-			});
+			const response = await axios.patch(
+				`https://api.notion.com/v1/pages/${pageId}`,
+				{
+					properties: {
+						Name: {
+							title: [
+								{
+									text: {
+										content: pageTitle,
+									},
+								},
+							],
+						},
+					},
+				},
+				{ headers: notionHeaders }
+			);
 
-			console.log("Page created in Notion:", response.data);
+			console.log("Page updated in Notion:", response.data);
 
-			res.status(200).send("Page created successfully");
+			res.status(200).send("Page updated successfully");
 
 		} catch (error) {
-			console.error("Error creating page in Notion:", error.response.data);
-			res.status(500).send("Error creating page in Notion");
+			console.error("Error updating page in Notion:", error.response?.data || error.message);
+			res.status(500).send("Error updating page in Notion");
 		}
 
 	} else {
