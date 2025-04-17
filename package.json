@@ -1,17 +1,17 @@
 {
-  "name": "invoice-title-generate",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "axios": "^1.8.4",
-    "dotenv": "^16.5.0"
-  }
+	"name": "invoice-title-generate",
+	"version": "1.0.0",
+	"description": "A simple application that generates invoice titles using the Notion API.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"dependencies": {
+		"axios": "^1.8.4",
+		"dotenv": "^16.5.0"
+	}
 }
